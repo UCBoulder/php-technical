@@ -1,0 +1,37 @@
+{
+  "name": "PHP Technical Assessment",
+  "image": "mcr.microsoft.com/devcontainers/php:4-8.3-bookworm",
+
+  "features": {
+    "ghcr.io/devcontainers/features/node:2": {
+      "version": "22"
+    }
+  },
+
+  "remoteEnv": {
+    "PATH": "/workspaces/${localWorkspaceFolderBasename}/.devcontainer/node_modules/.bin:${containerEnv:PATH}",
+    "XDEBUG_MODE": "develop"
+  },
+
+  "hostRequirements": {
+    "cpus": 2,
+    "memory": "4gb",
+    "storage": "16gb"
+  },
+
+  "onCreateCommand": "npm ci --prefix .devcontainer",
+  "postCreateCommand": "make test-local",
+  "waitFor": "postCreateCommand",
+
+  "customizations": {
+    "vscode": {
+      "extensions": [
+        "bmewburn.vscode-intelephense-client",
+        "xdebug.php-debug"
+      ],
+      "settings": {
+        "git.openRepositoryInParentFolders": "always"
+      }
+    }
+  }
+}

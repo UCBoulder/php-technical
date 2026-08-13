@@ -1,0 +1,12 @@
+{
+  "name": "php-technical-dev-tools",
+  "private": true,
+  "dependencies": {
+    "@anthropic-ai/claude-code": "2.1.210",
+    "@github/copilot": "1.0.70",
+    "@openai/codex": "0.144.4"
+  },
+  "allowScripts": {
+    "@anthropic-ai/claude-code@2.1.210": true
+  }
+}
