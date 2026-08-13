@@ -4,7 +4,7 @@ set -euo pipefail
 umask 077
 
 if [[ -z "${CODEX_AUTH_JSON:-}" ]]; then
-  echo "CODEX_AUTH_JSON is required. Add it as a GitHub Codespaces secret and rebuild the container." >&2
+  echo "CODEX_AUTH_JSON is required. An interview administrator must add it as a repository-level GitHub Codespaces secret." >&2
   exit 1
 fi
 
