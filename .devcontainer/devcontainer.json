@@ -10,8 +10,7 @@
 
   "secrets": {
     "CODEX_AUTH_JSON": {
-      "description": "Contents of your personal ~/.codex/auth.json file. Treat this value like a password.",
-      "documentationUrl": "https://developers.openai.com/codex/auth#login-on-headless-devices"
+      "description": "Interview-provided Codex service account credentials. Candidates do not need to supply this value."
     }
   },
 

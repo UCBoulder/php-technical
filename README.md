@@ -5,26 +5,12 @@
 Open the repository in GitHub Codespaces. The development container installs
 PHP 8.3 and the same Codex, Claude Code, and GitHub Copilot command-line tools. 
 
-Before creating the Codespace, add a user-level Codespaces secret named
-`CODEX_AUTH_JSON` containing the complete contents of your local
-`~/.codex/auth.json`. Scope the secret to this repository. The container setup
-validates the JSON and installs it as `~/.codex/auth.json` with permissions set
-to `0600`; the `~/.codex` directory is set to `0700`.
+The interview environment supplies Codex credentials automatically. Candidates
+do not need an OpenAI account, a subscription, an API key, or a Codex login.
 
-Using the GitHub CLI, configure the secret without printing it:
-
-```sh
-gh secret set CODEX_AUTH_JSON \
-  --user \
-  --app codespaces \
-  --repos UCBoulder/php-technical \
-  < ~/.codex/auth.json
-```
-
-The secret is required. If it is missing, Codespace post-creation setup stops
-with instructions to add it and rebuild the container. Each developer should
-use their own user-level secret; do not share a personal `auth.json` through a
-repository-level or organization-level secret.
+When the Codespace is created, setup validates the supplied credential JSON and
+installs it as `~/.codex/auth.json`. The file is readable only by the logged-in
+Codespace user.
 
 From the Codespace terminal, run:
 
@@ -33,6 +19,37 @@ codex login status
 php index.php
 make test-local
 ```
+
+### Interview administrator setup
+
+Add `CODEX_AUTH_JSON` as a **repository-level Codespaces secret**. Its value
+must be the complete contents of the interview service account's
+`~/.codex/auth.json` file. It must not be configured as an Actions secret.
+
+Using the GitHub CLI, configure it without printing it:
+
+```sh
+gh secret set CODEX_AUTH_JSON \
+  --app codespaces \
+  --repo UCBoulder/php-technical \
+  < /secure/path/to/auth.json
+```
+
+GitHub does not copy Codespaces secrets to forks. For the zero-login experience,
+give each candidate access to a UCBoulder-owned interview repository that has
+the repository secret configured, and have them create the Codespace from that
+repository. Use a dedicated private repository per candidate when interviews
+overlap or candidate work must remain isolated.
+
+At the end of the interview:
+
+1. Delete the candidate's Codespace.
+2. Remove the candidate's repository access.
+3. Delete `CODEX_AUTH_JSON` from the interview repository.
+4. Revoke or rotate the interview service-account credential.
+
+Deleting only the GitHub secret is insufficient because a running or stopped
+Codespace can retain the credential file that was already installed.
 
 ## Docker or Podman
 
