@@ -3,9 +3,7 @@
 ## GitHub Codespaces
 
 Open the repository in GitHub Codespaces. The development container installs
-PHP 8.3 and the same Codex, Claude Code, and GitHub Copilot command-line tools
-used by the reference technical-assessment environment. It also validates the
-program automatically when the Codespace is created.
+PHP 8.3 and the same Codex, Claude Code, and GitHub Copilot command-line tools. 
 
 From the Codespace terminal, run:
 
