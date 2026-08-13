@@ -8,6 +8,13 @@
     }
   },
 
+  "secrets": {
+    "CODEX_AUTH_JSON": {
+      "description": "Contents of your personal ~/.codex/auth.json file. Treat this value like a password.",
+      "documentationUrl": "https://developers.openai.com/codex/auth#login-on-headless-devices"
+    }
+  },
+
   "remoteEnv": {
     "PATH": "/workspaces/${localWorkspaceFolderBasename}/.devcontainer/node_modules/.bin:${containerEnv:PATH}",
     "XDEBUG_MODE": "develop"
@@ -20,7 +27,10 @@
   },
 
   "onCreateCommand": "npm ci --prefix .devcontainer",
-  "postCreateCommand": "make test-local",
+  "postCreateCommand": {
+    "codexAuth": ".devcontainer/setup-codex-auth.sh",
+    "tests": "make test-local"
+  },
   "waitFor": "postCreateCommand",
 
   "customizations": {
