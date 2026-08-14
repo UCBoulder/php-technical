@@ -12,8 +12,8 @@ cleanup() {
 trap cleanup EXIT
 
 export CODEX_AUTH_HOME="${test_root}/codex"
-export CODESPACES_SECRET_WRITER_TOKEN="test-writer-token"
 export CODEX_AUTH_REPOSITORY="UCBoulder/php-technical"
+unset GH_TOKEN GITHUB_TOKEN
 
 install -d -m 0700 \
   "${fixture_dir}/bin" \
@@ -43,7 +43,7 @@ php() {
 # Invoked by the scripts through the exported function.
 # shellcheck disable=SC2329
 gh() {
-  [[ "${GH_TOKEN:-}" == "${CODESPACES_SECRET_WRITER_TOKEN}" ]]
+  [[ -z "${GH_TOKEN:-}" ]]
 
   case "$*" in
     "api repos/UCBoulder/php-technical/codespaces/secrets/public-key")
@@ -74,7 +74,6 @@ IFS= read -r saved_hash < "${CODEX_AUTH_HOME}/.last-synced-auth.sha256"
 [[ "${saved_hash}" == "${expected_hash}" ]]
 
 printf '%s' '{"tokens":{"refresh_token":"refreshed-again"}}' > "${CODEX_AUTH_HOME}/auth.json"
-unset CODESPACES_SECRET_WRITER_TOKEN GH_TOKEN
 
 # Invoked by the script through the exported function.
 # shellcheck disable=SC2329
@@ -97,7 +96,6 @@ export -f gh
 "${fixture_dir}/sync-codex-auth.sh" >/dev/null
 
 export CODEX_AUTH_HOME="${test_root}/preflight-failure-codex"
-export CODESPACES_SECRET_WRITER_TOKEN="test-writer-token"
 
 # Invoked by the script through the exported function.
 # shellcheck disable=SC2329

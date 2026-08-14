@@ -31,19 +31,9 @@ When a Codespace is created, setup:
 Later `codex` commands repeat the writeback after they exit if the credential
 file changed.
 
-The writeback first uses the GitHub credentials already available in the
-Codespace. If that account cannot update repository Codespaces secrets, add an
-optional `CODESPACES_SECRET_WRITER_TOKEN` repository-level Codespaces secret.
-Its value must be a fine-grained GitHub token restricted to
-`UCBoulder/php-technical` with repository **Codespaces secrets: Read and write**
-permission.
-
-```sh
-printf '%s' "$CODESPACES_SECRET_WRITER_TOKEN" | gh secret set \
-  CODESPACES_SECRET_WRITER_TOKEN \
-  --app codespaces \
-  --repo UCBoulder/php-technical
-```
+The writeback uses the GitHub credentials already available in the Codespace.
+Setup stops before running Codex if those credentials cannot update the
+repository's Codespaces secrets.
 
 This handoff assumes interviews are sequential. Finish and delete the current
 Codespace before creating the next one.
@@ -60,8 +50,7 @@ repositories when interviews overlap or candidate work must remain isolated.
 1. Delete the candidate's Codespace.
 2. Remove the candidate's repository access.
 3. Delete `CODEX_AUTH_JSON` from the interview repository.
-4. If configured, delete and revoke `CODESPACES_SECRET_WRITER_TOKEN`.
-5. Revoke or rotate the interview Codex credential.
+4. Revoke or rotate the interview Codex credential.
 
 Deleting only the GitHub secret is insufficient because a running or stopped
 Codespace can retain the credential file that was already installed.
