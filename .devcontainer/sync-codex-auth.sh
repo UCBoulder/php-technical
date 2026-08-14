@@ -13,6 +13,19 @@ auth_file="${codex_dir}/auth.json"
 auth_hash_file="${codex_dir}/.last-synced-auth.sha256"
 repository="${CODEX_AUTH_REPOSITORY:-UCBoulder/php-technical}"
 
+github_cli() {
+  if [[ -n "${CODESPACES_SECRET_WRITER_TOKEN:-}" ]]; then
+    GH_TOKEN="${CODESPACES_SECRET_WRITER_TOKEN}" gh "$@"
+  else
+    gh "$@"
+  fi
+}
+
+if [[ "${1:-}" == "--check" ]]; then
+  github_cli api "repos/${repository}/codespaces/secrets/public-key" >/dev/null
+  exit 0
+fi
+
 if [[ ! -f "${auth_file}" ]]; then
   echo "Cannot save refreshed Codex credentials: ${auth_file} does not exist." >&2
   exit 1
@@ -35,17 +48,10 @@ if [[ "${auth_hash}" == "${previous_hash}" ]]; then
   exit 0
 fi
 
-if [[ -n "${CODESPACES_SECRET_WRITER_TOKEN:-}" ]]; then
-  GH_TOKEN="${CODESPACES_SECRET_WRITER_TOKEN}" gh secret set CODEX_AUTH_JSON \
-    --app codespaces \
-    --repo "${repository}" \
-    < "${auth_file}"
-else
-  gh secret set CODEX_AUTH_JSON \
-    --app codespaces \
-    --repo "${repository}" \
-    < "${auth_file}"
-fi
+github_cli secret set CODEX_AUTH_JSON \
+  --app codespaces \
+  --repo "${repository}" \
+  < "${auth_file}"
 
 hash_tmp="$(mktemp "${codex_dir}/auth.sha256.tmp.XXXXXX")"
 cleanup() {

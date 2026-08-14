@@ -39,6 +39,8 @@ else
 fi
 chmod 0600 "${auth_hash_file}"
 
+"${script_dir}/sync-codex-auth.sh" --check
+
 echo "Codex credentials installed at ~/.codex/auth.json; refreshing them now."
 "${script_dir}/bin/codex" exec \
   --skip-git-repo-check \

@@ -44,8 +44,18 @@ php() {
 # shellcheck disable=SC2329
 gh() {
   [[ "${GH_TOKEN:-}" == "${CODESPACES_SECRET_WRITER_TOKEN}" ]]
-  [[ "$*" == "secret set CODEX_AUTH_JSON --app codespaces --repo UCBoulder/php-technical" ]]
-  cmp - "${CODEX_AUTH_HOME}/auth.json"
+
+  case "$*" in
+    "api repos/UCBoulder/php-technical/codespaces/secrets/public-key")
+      return 0
+      ;;
+    "secret set CODEX_AUTH_JSON --app codespaces --repo UCBoulder/php-technical")
+      cmp - "${CODEX_AUTH_HOME}/auth.json"
+      ;;
+    *)
+      return 1
+      ;;
+  esac
 }
 
 export -f php gh
@@ -85,5 +95,23 @@ gh() {
 export -f gh
 
 "${fixture_dir}/sync-codex-auth.sh" >/dev/null
+
+export CODEX_AUTH_HOME="${test_root}/preflight-failure-codex"
+export CODESPACES_SECRET_WRITER_TOKEN="test-writer-token"
+
+# Invoked by the script through the exported function.
+# shellcheck disable=SC2329
+gh() {
+  return 1
+}
+export -f gh
+
+if CODEX_AUTH_JSON='{"tokens":{"refresh_token":"preflight-initial"}}' \
+  "${fixture_dir}/setup-codex-auth.sh" >/dev/null 2>&1; then
+  echo "Setup unexpectedly continued after the GitHub preflight failed" >&2
+  exit 1
+fi
+
+[[ "$(jq -r '.tokens.refresh_token' "${CODEX_AUTH_HOME}/auth.json")" == "preflight-initial" ]]
 
 echo "Codex credential writeback test passed"
