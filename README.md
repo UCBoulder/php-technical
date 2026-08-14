@@ -1,95 +1,48 @@
-# PHP Hello World
+# PHP Technical Assessment
 
-## GitHub Codespaces
+This repository contains the starter project for the technical interview.
 
-Open the repository in GitHub Codespaces. The development container installs
-PHP 8.3 and the same Codex, Claude Code, and GitHub Copilot command-line tools. 
+## Getting started
 
-The interview environment supplies Codex credentials automatically. Candidates
-do not need an OpenAI account, a subscription, an API key, or a Codex login.
+1. Open this repository in GitHub Codespaces.
+2. Wait for the Codespace setup to finish.
+3. Open a terminal in the Codespace.
 
-When the Codespace is created, setup validates the supplied credential JSON,
-installs it as `~/.codex/auth.json`, and runs a small Codex request so an expired
-access token is refreshed immediately. The updated `auth.json` is then written
-back to the repository's `CODEX_AUTH_JSON` Codespaces secret for the next
-Codespace. Later `codex` commands repeat the writeback after they exit if the
-credential file changed.
-
-From the Codespace terminal, run:
+Run the starter program:
 
 ```sh
-codex login status
 php index.php
+```
+
+Run the tests:
+
+```sh
 make test-local
 ```
 
-### Interview administrator setup
+The expected starter output is:
 
-Add `CODEX_AUTH_JSON` as a **repository-level Codespaces secret**. Its value
-must be the complete contents of the interview service account's
-`~/.codex/auth.json` file. It must not be configured as an Actions secret.
-
-Using the GitHub CLI, configure it without printing it:
-
-```sh
-gh secret set CODEX_AUTH_JSON \
-  --app codespaces \
-  --repo UCBoulder/php-technical \
-  < /secure/path/to/auth.json
+```text
+Hello, World!
 ```
 
-The writeback first uses the GitHub credentials that are already available in
-the Codespace. If that account cannot update repository Codespaces secrets, add
-an optional `CODESPACES_SECRET_WRITER_TOKEN` repository-level Codespaces
-secret. Its value must be a fine-grained GitHub token restricted to
-`UCBoulder/php-technical` with repository **Codespaces secrets: Read and write**
-permission.
+## Coding agent
+
+Codex is available from the Codespace terminal:
 
 ```sh
-printf '%s' "$CODESPACES_SECRET_WRITER_TOKEN" | gh secret set \
-  CODESPACES_SECRET_WRITER_TOKEN \
-  --app codespaces \
-  --repo UCBoulder/php-technical
+codex
 ```
 
-This handoff assumes interviews are sequential: finish and delete the current
-Codespace before creating the next one.
+You may use the coding agent while completing the exercise. Follow the
+interviewer's instructions for the assessment and submission process.
 
-GitHub does not copy Codespaces secrets to forks. For the zero-login experience,
-give each candidate access to a UCBoulder-owned interview repository that has
-the repository secret configured, and have them create the Codespace from that
-repository. Use a dedicated private repository per candidate when interviews
-overlap or candidate work must remain isolated.
+## Container commands
 
-At the end of the interview:
-
-1. Delete the candidate's Codespace.
-2. Remove the candidate's repository access.
-3. Delete `CODEX_AUTH_JSON` from the interview repository.
-4. If configured, delete and revoke `CODESPACES_SECRET_WRITER_TOKEN`.
-5. Revoke or rotate the interview Codex credential.
-
-Deleting only the GitHub secret is insufficient because a running or stopped
-Codespace can retain the credential file that was already installed.
-
-## Docker or Podman
-
-Build and run the program with Docker or Podman:
+You can also build and test the project with Docker or Podman:
 
 ```sh
 make build
 make run
-```
-
-To verify the output:
-
-```sh
 make test
-```
-
-With PHP 8.3 or newer installed locally, you can also run:
-
-```sh
-php index.php
-make test-local
 ```
