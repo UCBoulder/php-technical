@@ -30,13 +30,3 @@ codex
 
 Follow the interviewer's instructions for the assessment and submission
 process.
-
-## Container commands
-
-You can also build and test the project with Docker or Podman:
-
-```sh
-make build
-make run
-make test
-```
