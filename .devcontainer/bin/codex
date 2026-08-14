@@ -1,0 +1,24 @@
+#!/usr/bin/env bash
+
+set -uo pipefail
+
+script_dir="$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")" && pwd)"
+real_codex="${script_dir}/../node_modules/.bin/codex"
+sync_script="${script_dir}/../sync-codex-auth.sh"
+
+if [[ ! -x "${real_codex}" ]]; then
+  echo "Codex CLI is not installed. Rebuild the Codespace and try again." >&2
+  exit 1
+fi
+
+"${real_codex}" "$@"
+codex_status=$?
+
+"${sync_script}"
+sync_status=$?
+
+if [[ ${codex_status} -ne 0 ]]; then
+  exit "${codex_status}"
+fi
+
+exit "${sync_status}"
