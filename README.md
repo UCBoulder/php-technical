@@ -8,9 +8,12 @@ PHP 8.3 and the same Codex, Claude Code, and GitHub Copilot command-line tools.
 The interview environment supplies Codex credentials automatically. Candidates
 do not need an OpenAI account, a subscription, an API key, or a Codex login.
 
-When the Codespace is created, setup validates the supplied credential JSON and
-installs it as `~/.codex/auth.json`. The file is readable only by the logged-in
-Codespace user.
+When the Codespace is created, setup validates the supplied credential JSON,
+installs it as `~/.codex/auth.json`, and runs a small Codex request so an expired
+access token is refreshed immediately. The updated `auth.json` is then written
+back to the repository's `CODEX_AUTH_JSON` Codespaces secret for the next
+Codespace. Later `codex` commands repeat the writeback after they exit if the
+credential file changed.
 
 From the Codespace terminal, run:
 
@@ -35,6 +38,23 @@ gh secret set CODEX_AUTH_JSON \
   < /secure/path/to/auth.json
 ```
 
+The writeback first uses the GitHub credentials that are already available in
+the Codespace. If that account cannot update repository Codespaces secrets, add
+an optional `CODESPACES_SECRET_WRITER_TOKEN` repository-level Codespaces
+secret. Its value must be a fine-grained GitHub token restricted to
+`UCBoulder/php-technical` with repository **Codespaces secrets: Read and write**
+permission.
+
+```sh
+printf '%s' "$CODESPACES_SECRET_WRITER_TOKEN" | gh secret set \
+  CODESPACES_SECRET_WRITER_TOKEN \
+  --app codespaces \
+  --repo UCBoulder/php-technical
+```
+
+This handoff assumes interviews are sequential: finish and delete the current
+Codespace before creating the next one.
+
 GitHub does not copy Codespaces secrets to forks. For the zero-login experience,
 give each candidate access to a UCBoulder-owned interview repository that has
 the repository secret configured, and have them create the Codespace from that
@@ -46,7 +66,8 @@ At the end of the interview:
 1. Delete the candidate's Codespace.
 2. Remove the candidate's repository access.
 3. Delete `CODEX_AUTH_JSON` from the interview repository.
-4. Revoke or rotate the interview service-account credential.
+4. If configured, delete and revoke `CODESPACES_SECRET_WRITER_TOKEN`.
+5. Revoke or rotate the interview Codex credential.
 
 Deleting only the GitHub secret is insufficient because a running or stopped
 Codespace can retain the credential file that was already installed.

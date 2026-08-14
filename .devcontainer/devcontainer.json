@@ -15,7 +15,7 @@
   },
 
   "remoteEnv": {
-    "PATH": "/workspaces/${localWorkspaceFolderBasename}/.devcontainer/node_modules/.bin:${containerEnv:PATH}",
+    "PATH": "/workspaces/${localWorkspaceFolderBasename}/.devcontainer/bin:/workspaces/${localWorkspaceFolderBasename}/.devcontainer/node_modules/.bin:${containerEnv:PATH}",
     "XDEBUG_MODE": "develop"
   },
 
