@@ -28,8 +28,7 @@
 
   "onCreateCommand": "npm ci --prefix .devcontainer",
   "postCreateCommand": {
-    "codexAuth": ".devcontainer/setup-codex-auth.sh",
-    "tests": "make test-local"
+    "codexAuth": ".devcontainer/setup-codex-auth.sh"
   },
   "waitFor": "postCreateCommand",
 

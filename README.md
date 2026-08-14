@@ -14,12 +14,6 @@ Run the starter program:
 php index.php
 ```
 
-Run the tests:
-
-```sh
-make test-local
-```
-
 The expected starter output is:
 
 ```text
