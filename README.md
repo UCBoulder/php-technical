@@ -34,8 +34,8 @@ Codex is available from the Codespace terminal:
 codex
 ```
 
-You may use the coding agent while completing the exercise. Follow the
-interviewer's instructions for the assessment and submission process.
+Follow the interviewer's instructions for the assessment and submission
+process.
 
 ## Container commands
 
