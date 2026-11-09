@@ -2,7 +2,7 @@
   "name": "php-technical-dev-tools",
   "private": true,
   "dependencies": {
-    "@anthropic-ai/claude-code": "2.1.210",
+    "@anthropic-ai/claude-code": "2.1.251",
     "@github/copilot": "1.0.70",
     "@openai/codex": "0.147.0"
   },
